@@ -1,5 +1,5 @@
-#include <fstream>
-#include <string>
+#ifndef logger
+#define logger
 
 #define ENABLE_LOG_WARNING 1
 #define ENABLE_LOG_INFO 1
@@ -14,14 +14,14 @@ enum LogLevel
     DEBUG = 4
 };
 
-const std::string LogLevels[5] = { "FATAL", "ERROR", "WARNING", "INFO", "DEBUG" };
+const char LogLevels[][10] = {"FATAL", "ERROR", "WARNING", "INFO", "DEBUG"};
 
 class Logger
 {
 public:
     static bool Initialize();
     static void Shutdown();
-    static void Log(LogLevel level, char* message);
+    static void Log(LogLevel level, const char* message);
 };
 
 #define LOG_FATAL(message) Logger::Log(FATAL, message)
@@ -43,4 +43,6 @@ public:
 #define LOG_DEBUG(message) Logger::Log(DEBUG, message)
 #else
 #define LOG_DEBUG(message)
+#endif
+
 #endif

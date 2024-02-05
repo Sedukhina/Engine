@@ -1,7 +1,6 @@
-#include "logger.hpp"
+#include "logger.h"
 
-//TO DO: Remove after changing log destination
-#include <iostream>
+#include<cstdio>
 
 bool Logger::Initialize()
 {
@@ -13,12 +12,7 @@ void Logger::Shutdown()
 
 }
 
-void Logger::Log(LogLevel level, char* message)
+void Logger::Log(LogLevel level, const char* message)
 {
-    std::string OutMessage = LogLevels[level];
-    OutMessage += ": ";
-    OutMessage += message;
-    OutMessage += "\n";
-
-    std::cout << OutMessage;
+    printf("%s: %s\n", LogLevels[level], message);
 }
