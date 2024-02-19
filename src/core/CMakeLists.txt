@@ -1,0 +1,6 @@
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+add_library(Core SHARED "logger.h" "logger.cpp" "level.cpp" "core.h")
+target_include_directories(Core PUBLIC "${CURRENT_SOURCE_DIR}")
+install(TARGETS Core EXPORT Core LIBRARY DESTINATION ${CMAKE_BINARY_DIR}/lib)
+export(TARGETS Core FILE ${CMAKE_BINARY_DIR}/core/CoreConfig.cmake)
+file(WRITE ${CMAKE_BINARY_DIR}/core/CoreConfig.cmake "")

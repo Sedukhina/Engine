@@ -1,10 +1,12 @@
 //temp
 #include<cstdio>
 
-#include "logger.h"
+#include "Engine.h"
 
 int main()
 {
-    LOG_INFO("Working properly");
+    Engine engine;
+    engine.StartUp();
+    engine.ShutDown();
     getchar();
 }

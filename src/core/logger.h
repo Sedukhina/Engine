@@ -1,5 +1,4 @@
-#ifndef logger
-#define logger
+#pragma once
 
 #define ENABLE_LOG_WARNING 1
 #define ENABLE_LOG_INFO 1
@@ -16,6 +15,7 @@ enum LogLevel
 
 const char LogLevels[][10] = {"FATAL", "ERROR", "WARNING", "INFO", "DEBUG"};
 
+// Static logger class
 class Logger
 {
 public:
@@ -43,6 +43,4 @@ public:
 #define LOG_DEBUG(message) Logger::Log(DEBUG, message)
 #else
 #define LOG_DEBUG(message)
-#endif
-
 #endif

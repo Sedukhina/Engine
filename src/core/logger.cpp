@@ -1,5 +1,6 @@
 #include "logger.h"
 
+//temp for console logging
 #include<cstdio>
 
 bool Logger::Initialize()
