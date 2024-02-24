@@ -3,9 +3,12 @@
 bool Engine::StartUp()
 {
 	LOG_INFO("Engine succesfully started up");
-	GetRenderer().StartUp();
+	if (!GetRenderer().StartUp())
+	{
+		return 0;
+	}
 	Mainloop();
-	return 0;
+	return 1;
 }
 
 void Engine::ShutDown()

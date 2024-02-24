@@ -6,7 +6,10 @@
 int main()
 {
     Engine engine;
-    engine.StartUp();
-    engine.ShutDown();
+    if (engine.StartUp())
+    {
+        getchar();
+        engine.ShutDown();
+    }
     getchar();
 }
