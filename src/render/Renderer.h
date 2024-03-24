@@ -1,3 +1,5 @@
+#pragma once
+
 #ifdef VULKAN
 	class VulkanRenderer;
 #else

@@ -2,7 +2,10 @@
   "name": "engine",
   "version": "0.1",
   "dependencies": [
-    "glfw3"
+    "glfw3",
+    "glm",
+    "assimp",
+    "glew"
   ],
   "builtin-baseline": "62aa44929954469878eb8fc562af706a8f5615a5"
 }

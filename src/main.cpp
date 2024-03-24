@@ -8,7 +8,6 @@ int main()
     Engine engine;
     if (engine.StartUp())
     {
-        getchar();
         engine.ShutDown();
     }
     getchar();

@@ -1,5 +1,10 @@
+#pragma once
+
 #include "../IRenderer.h"
-//Windowing library
+
+// OpenGL Extension Wrangler Library
+#include <GL/glew.h>
+// Windowing library
 #include <GLFW/glfw3.h>
 
 class OpenGLRenderer : public IRenderer
@@ -7,6 +12,11 @@ class OpenGLRenderer : public IRenderer
 public:
 	virtual bool StartUp() override;
 	virtual void ShutDown() override;
+	virtual bool ShouldClose() override;
+	virtual void SetShouldCloseTrue() override;
+	virtual void Tick() override;
+
+	static OpenGLRenderer& GetRenderer();
 private:
 	GLFWwindow* window;
 };

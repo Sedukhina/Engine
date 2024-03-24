@@ -12,7 +12,5 @@ public:
 
 private:
 	void Mainloop();
-
-	static CRenderer& GetRenderer();
 };
 
