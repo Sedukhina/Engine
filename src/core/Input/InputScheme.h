@@ -1,6 +1,6 @@
 #pragma once
 
-#include <array>
+#include <map>
 #include <vector>
 #include "InputComponent.h"
 
@@ -50,7 +50,7 @@ enum InputKey
 class InputScheme
 {
 public:
-	InputScheme() { BindedActions.fill(std::vector<InputActionFunction>{ }); };
+	InputScheme() { };
 	~InputScheme() {};
 
 	// Use std::bind to make first argument: std::bind(&InputComponent::ActionToBind, this)
@@ -62,5 +62,6 @@ public:
 private:
 	// Functions to invoke (ONLY VOID RETURN)
 	// ARRAY[Action_num] contains ARRAY[Input_keys_num] contains vector of refernces to InputController methods invoked by certain action and key  
-	std::array<std::vector<InputActionFunction>, InputKey::LAST_KEY_VALUE * (InputAction::LAST_ACTION_VALUE + 1) +1> BindedActions;
+	//std::array<std::vector<InputActionFunction>, InputKey::LAST_KEY_VALUE * (InputAction::LAST_ACTION_VALUE + 1) +1> BindedActions;
+	std::map<int, std::vector<InputActionFunction>> BindedActions;
 };

@@ -17,8 +17,10 @@ void InputScheme::BindInputAction(InputActionFunction func, int key, int action)
 
 void InputScheme::InvokeAction(InputKey key, InputAction action)
 {
-	for (std::function<void()> Action : BindedActions[action * InputKey::LAST_KEY_VALUE + key])
-	{
-		std::invoke(Action);
+	if (BindedActions.find(action * InputKey::LAST_KEY_VALUE + key) != BindedActions.end()) {
+		for (std::function<void()> Action : BindedActions[action * InputKey::LAST_KEY_VALUE + key])
+		{
+			std::invoke(Action);
+		}
 	}
 }
