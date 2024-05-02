@@ -1,11 +1,11 @@
 #include "Object.h"
 
-glm::vec3 CObject::GetLocation()
+glm::vec3 CSceneObject::GetLocation()
 {
-    return location;
+    return Location;
 }
 
-glm::vec3 CObject::GetRotation()
+glm::vec3 CSceneObject::GetRotation()
 {
-    return rotation;
+    return Rotation;
 }

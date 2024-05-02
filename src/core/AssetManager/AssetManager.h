@@ -7,7 +7,7 @@ class CAssetManager {
 public:
 	static CAssetManager& GetAssetManager();
 
-	int LoadMesh(CPath Path);
+	int ImportMesh(CPath Path);
 
 private:
 	CAssetManager() {};

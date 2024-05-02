@@ -1,6 +1,9 @@
 #include "Engine.h"
 #include <time.h>
 #include <cstdio>
+#include "render/Renderer.h"
+#include "GameState.h"
+#include "Level.h"
 
 bool Engine::StartUp()
 {
@@ -11,6 +14,8 @@ bool Engine::StartUp()
 		return 0;
 	}
 	LOG_INFO("Engine succesfully started up");
+	CLevel Level = CLevel();
+	GetGameState().Initialize(Level);
 	Mainloop();
 	return 1;
 }

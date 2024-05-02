@@ -1,5 +1,6 @@
+#pragma once
+
 #include "core.h"
-#include "render/Renderer.h"
 
 class Engine
 {

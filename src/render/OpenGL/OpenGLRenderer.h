@@ -7,6 +7,8 @@
 // Windowing library
 #include <GLFW/glfw3.h>
 
+#include "ShaderProgram.h"
+
 class OpenGLRenderer : public IRenderer
 {
 public:
@@ -19,4 +21,8 @@ public:
 	static OpenGLRenderer& GetRenderer();
 private:
 	GLFWwindow* window;
+	CShaderProgram* ShaderProgram;
+
+	// Uniforms for shaders
+	GLint CameraPerspectiveMatrixLocation;
 };
