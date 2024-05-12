@@ -10,6 +10,8 @@ public:
     virtual void SetShouldCloseTrue() = 0;
     virtual void Tick() = 0;
 
+    virtual void GetScreenSize(int* width, int* height) = 0;
+
 protected:
     IRenderer() : RendererInputComponent(this) {};
     CRendererInputComponent RendererInputComponent;

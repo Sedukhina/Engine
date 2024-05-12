@@ -5,14 +5,21 @@
 class SCamera : public CSceneObject
 {
 public:
-	SCamera(glm::vec3 location, glm::vec3 rotation) : CSceneObject(location, rotation) {};
+	SCamera(glm::vec3 location, glm::vec3 rotation);
 	~SCamera() {};
-	// Ratio: width/height
+
 	glm::mat4 GetCameraPerspectiveMatrix(float ScreenRatio);
 
 private:
 	bool Orthographic = 0;
-	int FOV = 90;
-	int MinDistance = 5;
-	int MaxDistance = 100;
+	float FOV = 90;
+	float MinDistance = 5;
+	float MaxDistance = 1000;
+
+	glm::mat4 CameraPerspectiveMatrix;
+
+	void SCamera::UpdatePerspectiveMatrix();
+
+	// Ratio: width/height
+	float CachedScreenRatio = 1;
 };

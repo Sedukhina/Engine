@@ -11,7 +11,9 @@ public:
 	bool StartUp();
 	void ShutDown();
 
-private:
 	void Mainloop();
+	void Tick();
+private:
+	
 };
 

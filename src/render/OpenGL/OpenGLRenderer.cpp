@@ -3,6 +3,7 @@
 #include "..\core\Camera.h"
 #include "..\core\Player.h"
 #include "..\core\core.h"
+#include "..\core\AssetManager\AssetManager.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
@@ -15,7 +16,7 @@ bool OpenGLRenderer::StartUp()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-	window = glfwCreateWindow(mode->width, mode->height, "Engine", nullptr, nullptr);
+	window = glfwCreateWindow(mode->width, mode->height, "Engine", glfwGetPrimaryMonitor(), nullptr);
 	if (window == nullptr)
 	{
 		LOG_FATAL("Failed to create GLFW window");
@@ -40,6 +41,7 @@ bool OpenGLRenderer::StartUp()
 	int screenWidth, screenHeight;
 	glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
 	glViewport(0, 0, screenWidth, screenHeight);
+	ScreenRatio = (GLfloat)screenWidth / (GLfloat)screenHeight;
 
 	// Global OpenGL Settings
 	glEnable(GL_DEPTH_TEST);
@@ -48,6 +50,8 @@ bool OpenGLRenderer::StartUp()
 	ShaderProgram = &CShaderProgram("/render/Shaders/OGL_Shaders/Shader.vert", "/render/Shaders/OGL_Shaders/Shader.frag");
 	CameraPerspectiveMatrixLocation = ShaderProgram->GetUniformLocation("CameraPerspectiveMatrix");
 	ShaderProgram->Use();
+
+	CameraPerspectiveMatrix = glm::mat4(1);
 
 	LOG_INFO("Renderer succesfully started up");
 	return true;
@@ -72,36 +76,19 @@ void OpenGLRenderer::SetShouldCloseTrue()
 
 void OpenGLRenderer::Tick()
 {
+
 	glClearColor(0.0f, 0.2f, 0.6f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
+	CameraPerspectiveMatrix = GetPlayer()->GetCurrentCamera()->GetCameraPerspectiveMatrix(ScreenRatio);
+
 	/// TEMP BLOCK 
 	glm::mat4 model_matrix(1);
-
-	int screenWidth, screenHeight;
-	glfwGetFramebufferSize(window, &screenWidth, &screenHeight);
-	glm::mat4 CameraPerspectiveMatrix = GetPlayer()->GetCurrentCamera()->GetCameraPerspectiveMatrix(((GLfloat)screenWidth / (GLfloat)screenHeight));
-
 	glm::mat4 LocalToProjectionSpaceMatrix = CameraPerspectiveMatrix * model_matrix;
 
 	glUniformMatrix4fv(CameraPerspectiveMatrixLocation, 1, GL_FALSE, glm::value_ptr(CameraPerspectiveMatrix));
 
-	float vertices[] = {
-		-1.f, 0.f, -1.f,  
-		-1.f, 0.f, 1.f,
-		1.f, 0.f, -1.f,
-		1.f, 0.f, 1.f,
-		0.f, 3.f, 0.f
-	};
-
-	int indices[] = {
-		0, 1, 2,
-		3, 1, 2,
-		0, 1, 4,
-		0, 2, 4,
-		3, 1, 4,
-		3, 2, 4
-	};
+	CMesh* Mesh = GetAssetManager().GetMesh();
 
 	unsigned int VBO, VAO, EBO;
 	glGenVertexArrays(1, &VAO);
@@ -111,21 +98,27 @@ void OpenGLRenderer::Tick()
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, Mesh->GetVerticesSize(), Mesh->GetVertices(), GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, Mesh->GetIndicesSize(), Mesh->GetIndices(), GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid*)0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, 0);
+
+	glDrawElements(GL_TRIANGLES, Mesh->GetIndicesSize(), GL_UNSIGNED_INT, 0);
 	/// END OF TEMP BLOCK
 
 
 	glfwSwapBuffers(window);		
 	glfwPollEvents();
+}
+
+void OpenGLRenderer::GetScreenSize(int* width, int* height)
+{
+	glfwGetFramebufferSize(window, width, height);
 }
 
 OpenGLRenderer& OpenGLRenderer::GetRenderer()

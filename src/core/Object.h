@@ -15,6 +15,8 @@ public:
 	glm::vec3 GetLocation();
 	glm::vec3 GetRotation();
 
+	void Tick() {};
+
 protected:
 	glm::vec3 Location;
 	// Front vector

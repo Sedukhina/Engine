@@ -18,11 +18,19 @@ public:
 	virtual void SetShouldCloseTrue() override;
 	virtual void Tick() override;
 
+	virtual void GetScreenSize(int* width, int* height) override;
+
 	static OpenGLRenderer& GetRenderer();
 private:
 	GLFWwindow* window;
 	CShaderProgram* ShaderProgram;
 
 	// Uniforms for shaders
-	GLint CameraPerspectiveMatrixLocation;
+	GLint CameraPerspectiveMatrixLocation; 
+	
+	// Updates when tick
+	glm::mat4 CameraPerspectiveMatrix;
+
+	// TEMP (TRANSFER TO SETTINGS THEN)
+	float ScreenRatio;
 };

@@ -4,6 +4,7 @@
 #include "render/Renderer.h"
 #include "GameState.h"
 #include "Level.h"
+#include "AssetManager/AssetManager.h"
 
 bool Engine::StartUp()
 {
@@ -16,7 +17,10 @@ bool Engine::StartUp()
 	LOG_INFO("Engine succesfully started up");
 	CLevel Level = CLevel();
 	GetGameState().Initialize(Level);
-	Mainloop();
+	auto Model = GetAssetManager().ImportModel("/Test_models/metal-shelf-14mb/source/metal shelf.fbx");
+	//auto ID = GetAssetManager().ImportModel("/Test_models/castle-of-loarre/source/Loarre/Loarre.fbx");
+	//auto Model = GetAssetManager().ImportModel("/Test_models/chinese-pagoda/source/BaotaS/BaotaS.obj");
+
 	return 1;
 }
 
@@ -28,18 +32,20 @@ void Engine::ShutDown()
 
 void Engine::Mainloop()
 {
-	clock_t time_from_start = clock();
-	char buffer[100];
-
 	while (!CRenderer::GetRenderer().ShouldClose())
 	{
-		time_from_start = clock();
-		if (time_from_start % 1000 == 0)
-		{
-			CRenderer::GetRenderer().Tick();
-			sprintf(buffer, "Working properly for %d", time_from_start);
-			LOG_INFO(buffer);
-		}
+		Tick();
 	}
 }
 
+void Engine::Tick()
+{
+	clock_t time_from_start = clock();
+	if (time_from_start % 1000 == 0)
+	{
+		char buffer[100];
+		CRenderer::GetRenderer().Tick();
+		sprintf(buffer, "Working properly for %d", time_from_start);
+		LOG_INFO(buffer);
+	}
+}

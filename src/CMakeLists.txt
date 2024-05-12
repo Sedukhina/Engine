@@ -21,7 +21,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 add_compile_definitions("BIN_ROOT=${CMAKE_BINARY_DIR}")
 
-add_executable(main "main.cpp" "Engine.h" "Engine.cpp")
+add_executable(main "main.cpp" "Engine.h" "Engine.cpp" )
 target_include_directories(main PRIVATE ${glfw3_INCLUDE_DIRS})
 target_include_directories(main PRIVATE ${glm_INCLUDE_DIRS})
 target_include_directories(main PRIVATE ${assimp_INCLUDE_DIRS})

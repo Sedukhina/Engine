@@ -1,13 +1,24 @@
 #pragma once
-#define MAX_FILENAME_LENGTH 255
+#include <filesystem>
 
 // Should be inherited by all assets classes 
 class Asset {
-	//GUID
-	unsigned AssetID;
-	char16_t Name[MAX_FILENAME_LENGTH];
+public:
+	void SetName(std::string Name);
+
+	std::string GetName();
+	uint64_t GetAssetID();
 
 protected:
+	Asset(std::filesystem::path path, std::string assetName);
+	~Asset() {};
+
+private:
 	Asset();
-	~Asset();
+	uint64_t GenerateAssetID();
+
+	//GUID
+	uint64_t AssetID;
+	std::filesystem::path Path;
+	std::string AssetName;
 };
