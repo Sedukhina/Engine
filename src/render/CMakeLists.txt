@@ -1,4 +1,4 @@
-add_library(Render STATIC "IRenderer.h" "InputCallback.h" "OpenGL/OpenGLRenderer.h" "OpenGL/OpenGLRenderer.cpp" "Renderer.h" "RendererInputComponent.h" "RendererInputComponent.cpp" "OpenGL/ShaderProgram.h" "OpenGL/ShaderProgram.cpp"  )
+add_library(Render STATIC "IRenderer.h" "InputCallback.h" "OpenGL/OpenGLRenderer.h" "OpenGL/OpenGLRenderer.cpp" "Renderer.h" "RendererInputComponent.h" "RendererInputComponent.cpp" "OpenGL/ShaderProgram.h" "OpenGL/ShaderProgram.cpp"   "Vulkan/VulkanRenderer.h")
 target_include_directories(Render PUBLIC "${CURRENT_SOURCE_DIR}")
 
 find_package(glfw3 REQUIRED)

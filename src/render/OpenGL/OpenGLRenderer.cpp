@@ -2,6 +2,7 @@
 #include "InputCallback.h"
 #include "..\core\Camera.h"
 #include "..\core\Player.h"
+#include "..\core\Level.h"
 #include "..\core\core.h"
 #include "..\core\AssetManager\AssetManager.h"
 #include "glm/glm.hpp"
@@ -49,6 +50,9 @@ bool OpenGLRenderer::StartUp()
 	// Creating Shader Program
 	ShaderProgram = &CShaderProgram("/render/Shaders/OGL_Shaders/Shader.vert", "/render/Shaders/OGL_Shaders/Shader.frag");
 	CameraPerspectiveMatrixLocation = ShaderProgram->GetUniformLocation("CameraPerspectiveMatrix");
+	BaseTexture = ShaderProgram->GetUniformLocation("BaseColor");
+	// Texture 0 will be taken as BaseColor texture
+	glUniform1i(BaseTexture, 0);
 	ShaderProgram->Use();
 
 	CameraPerspectiveMatrix = glm::mat4(1);
@@ -74,43 +78,62 @@ void OpenGLRenderer::SetShouldCloseTrue()
 	glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
-void OpenGLRenderer::Tick()
+void OpenGLRenderer::Tick(float DeltaTime)
 {
 
-	glClearColor(0.0f, 0.2f, 0.6f, 1.0f);
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	CameraPerspectiveMatrix = GetPlayer()->GetCurrentCamera()->GetCameraPerspectiveMatrix(ScreenRatio);
 
-	/// TEMP BLOCK 
-	glm::mat4 model_matrix(1);
-	glm::mat4 LocalToProjectionSpaceMatrix = CameraPerspectiveMatrix * model_matrix;
+	std::vector<CSceneObject> ObjectsToRender = GetLevel()->GetSceneObjects();
+	for (CSceneObject Object : ObjectsToRender)
+	{
+		std::vector<uint64_t> Models = Object.GetObjectsModels();
+		for (uint64_t ModelID : Models)
+		{
+			CModel* Model = GetAssetManager().GetModel(ModelID);
+			glm::mat4 ModelMatrix = Model->GetModelMatrix();
+			glm::mat4 LocalToProjectionSpaceMatrix = CameraPerspectiveMatrix * ModelMatrix;
+			glUniformMatrix4fv(CameraPerspectiveMatrixLocation, 1, GL_FALSE, glm::value_ptr(LocalToProjectionSpaceMatrix));
 
-	glUniformMatrix4fv(CameraPerspectiveMatrixLocation, 1, GL_FALSE, glm::value_ptr(CameraPerspectiveMatrix));
+			GLuint VAO;
+			auto MapIter = Meshes.find(Model->GetMesh());
+			if (MapIter != Meshes.end())
+			{
+				VAO = MapIter->second;
+			}
+			else
+			{
+				VAO = LoadMeshToVideomemory(Model->GetMesh());
+			}
+			glBindVertexArray(VAO);
 
-	CMesh* Mesh = GetAssetManager().GetMesh();
+			if (Model->HasMaterial())
+			{
+				CMaterial* Material = GetAssetManager().GetMaterial(Model->GetMaterial());
+				uint64_t Base = Material->GetBaseColor();
+				if (Base)
+				{
+					auto TextIter = Textures.find(Base);
+					if (TextIter != Textures.end())
+					{	
+						glActiveTexture(GL_TEXTURE0);
+						glBindTexture(GL_TEXTURE_2D, TextIter->second);
+					}
+					else
+					{
+						GLuint Texture = LoadTextureToVideomemory(Base);
+						glActiveTexture(GL_TEXTURE0);
+						glBindTexture(GL_TEXTURE_2D, Texture);
+					}
+				}
+			}
 
-	unsigned int VBO, VAO, EBO;
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
-
-	glBindVertexArray(VAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, Mesh->GetVerticesSize(), Mesh->GetVertices(), GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, Mesh->GetIndicesSize(), Mesh->GetIndices(), GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid*)0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-
-	glDrawElements(GL_TRIANGLES, Mesh->GetIndicesSize(), GL_UNSIGNED_INT, 0);
-	/// END OF TEMP BLOCK
-
+			glDrawElements(GL_TRIANGLES, GetAssetManager().GetMesh(Model->GetMesh())->GetIndicesSize(), GL_UNSIGNED_INT, 0);
+			glBindVertexArray(0);
+		}
+	}
 
 	glfwSwapBuffers(window);		
 	glfwPollEvents();
@@ -121,8 +144,80 @@ void OpenGLRenderer::GetScreenSize(int* width, int* height)
 	glfwGetFramebufferSize(window, width, height);
 }
 
+bool OpenGLRenderer::IsAssetLoaded(uint64_t AssetID)
+{
+	if ((Meshes.count(AssetID) >  0) || (Textures.count(AssetID) > 0))
+	{
+		return true;
+	}
+	return false;
+}
+
 OpenGLRenderer& OpenGLRenderer::GetRenderer()
 {
 	static OpenGLRenderer Renderer;
 	return Renderer;
+}
+
+GLuint OpenGLRenderer::LoadMeshToVideomemory(uint64_t MeshID)
+{
+	GLuint VAO, VBO, EBO;
+
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
+
+	glBindVertexArray(VAO);
+
+	CMesh* Mesh = GetAssetManager().GetMesh(MeshID);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, Mesh->GetVerticesSize(), Mesh->GetVertices(), GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, Mesh->GetIndicesSize(), Mesh->GetIndices(), GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0);
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, NormalX));
+
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, TextureCoordinateX));
+
+	Meshes.emplace(MeshID, VAO);
+	glBindVertexArray(0);
+	return VAO;
+}
+
+GLuint OpenGLRenderer::LoadTextureToVideomemory(uint64_t TextureID)
+{
+	CTexture* Texture = GetAssetManager().GetTexture(TextureID);
+
+	// Generating ID for a texture
+	GLuint TextureLoc;
+	glGenTextures(1, &TextureLoc);
+
+	// Binding new texture to work with it
+	glBindTexture(GL_TEXTURE_2D, TextureLoc);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	// Loading data to bound texture
+	const unsigned char* Pixels = Texture->GetPixels();
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	if (Texture->GetNumChannels() == 3)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Texture->GetWidth(), Texture->GetHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, Pixels);
+	}
+	else if (Texture->GetNumChannels() == 4)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Texture->GetWidth(), Texture->GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, Pixels);
+	}
+	Textures.emplace(TextureID, TextureLoc);
+	return TextureLoc;
 }

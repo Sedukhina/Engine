@@ -4,9 +4,12 @@
 class CGameState;
 class SPlayer;
 class SCamera;
+class CLevel;
 class CAssetManager;
 
 extern SPlayer* GetPlayer();
+
+extern CLevel* GetLevel();
 
 extern CGameState& GetGameState();
 

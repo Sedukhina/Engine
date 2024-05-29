@@ -1,6 +1,7 @@
 #pragma once
-
+#include <time.h>
 #include "core.h"
+
 
 class Engine
 {
@@ -12,8 +13,8 @@ public:
 	void ShutDown();
 
 	void Mainloop();
-	void Tick();
+	void Tick(float DeltaTime);
 private:
-	
+	clock_t LastFrame;
 };
 

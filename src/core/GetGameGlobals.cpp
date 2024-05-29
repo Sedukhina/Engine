@@ -7,6 +7,11 @@ SPlayer* GetPlayer()
 	return GetGameState().GetPlayer();
 }
 
+CLevel* GetLevel()
+{
+	return GetGameState().GetLevel();
+}
+
 CGameState& GetGameState()
 {
 	static CGameState GameState;

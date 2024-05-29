@@ -1,5 +1,4 @@
 #include "Engine.h"
-#include <time.h>
 #include <cstdio>
 #include "render/Renderer.h"
 #include "GameState.h"
@@ -8,19 +7,16 @@
 
 bool Engine::StartUp()
 {
+	LastFrame = clock();
 	auto Controller = GetInputController();
 	LOG_INFO("Input Controller Initialized");
 	if (!CRenderer::GetRenderer().StartUp())
 	{
 		return 0;
 	}
-	LOG_INFO("Engine succesfully started up");
 	CLevel Level = CLevel();
 	GetGameState().Initialize(Level);
-	auto Model = GetAssetManager().ImportModel("/Test_models/metal-shelf-14mb/source/metal shelf.fbx");
-	//auto ID = GetAssetManager().ImportModel("/Test_models/castle-of-loarre/source/Loarre/Loarre.fbx");
-	//auto Model = GetAssetManager().ImportModel("/Test_models/chinese-pagoda/source/BaotaS/BaotaS.obj");
-
+	LOG_INFO("Engine succesfully started up");
 	return 1;
 }
 
@@ -34,18 +30,16 @@ void Engine::Mainloop()
 {
 	while (!CRenderer::GetRenderer().ShouldClose())
 	{
-		Tick();
+		clock_t DeltaTime = clock() - LastFrame + 1;
+		LastFrame = clock();
+		Tick(DeltaTime);
 	}
 }
 
-void Engine::Tick()
+void Engine::Tick(float DeltaTime)
 {
-	clock_t time_from_start = clock();
-	if (time_from_start % 1000 == 0)
-	{
-		char buffer[100];
-		CRenderer::GetRenderer().Tick();
-		sprintf(buffer, "Working properly for %d", time_from_start);
-		LOG_INFO(buffer);
-	}
+	char buffer[100];
+	CRenderer::GetRenderer().Tick(DeltaTime);
+	sprintf(buffer, "FPS: %f", 1000.f/DeltaTime);
+	LOG_INFO(buffer);
 }

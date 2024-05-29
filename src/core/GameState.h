@@ -13,6 +13,7 @@ public:
 	void Initialize(CLevel Level);
 
 	SPlayer* GetPlayer() { return CurrentPlayer.get(); };
+	CLevel* GetLevel() { return CurrentLevel.get(); };
 
 private:
 	std::shared_ptr<SPlayer> CurrentPlayer;

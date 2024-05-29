@@ -5,6 +5,11 @@
 #define STRING(x) #x
 #define TO_STRING(x) STRING(x)
 
+bool Asset::IsLoaded()
+{
+	return Loaded;
+}
+
 void Asset::SetName(std::string Name)
 {
 }
