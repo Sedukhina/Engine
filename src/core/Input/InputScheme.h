@@ -54,8 +54,8 @@ public:
 	~InputScheme() {};
 
 	// Use std::bind to make first argument: std::bind(&InputComponent::ActionToBind, this)
-	void BindInputAction(InputActionFunction func, InputKey key, InputAction action);
-	void BindInputAction(InputActionFunction func, int key, int action);
+	__declspec(dllexport) void BindInputAction(InputActionFunction func, InputKey key, InputAction action);
+	__declspec(dllexport) void BindInputAction(InputActionFunction func, int key, int action);
 	void InvokeAction(InputKey key, InputAction action);
 
 

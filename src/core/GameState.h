@@ -10,10 +10,10 @@ public:
 	CGameState() {};
 	~CGameState() {};
 
-	void Initialize(CLevel Level);
+	__declspec(dllexport) void Initialize(CLevel Level);
 
-	SPlayer* GetPlayer() { return CurrentPlayer.get(); };
-	CLevel* GetLevel() { return CurrentLevel.get(); };
+	__declspec(dllexport) SPlayer* GetPlayer() { return CurrentPlayer.get(); };
+	__declspec(dllexport) CLevel* GetLevel() { return CurrentLevel.get(); };
 
 private:
 	std::shared_ptr<SPlayer> CurrentPlayer;

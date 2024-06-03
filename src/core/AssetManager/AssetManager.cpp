@@ -207,7 +207,9 @@ void CAssetManager::ProcessAssimpSceneMeshes(aiNode* Node, const aiScene* Scene,
 			Vertices.push_back(Vert);
 		}
 		
-		CMesh Mesh =  CMesh(Path, AiMesh->mName.C_Str(), Vertices, Indices);
+		CAABB Box = CAABB(AiMesh->mAABB.mMin.x, AiMesh->mAABB.mMin.y, AiMesh->mAABB.mMin.z, AiMesh->mAABB.mMax.x, AiMesh->mAABB.mMax.y, AiMesh->mAABB.mMax.z);
+
+		CMesh Mesh =  CMesh(Path, AiMesh->mName.C_Str(), Vertices, Indices, Box);
 		CreatedAssetsIDs->emplace_back(Mesh.GetAssetID());
 		Meshes.emplace(Mesh.GetAssetID(), std::make_unique<CMesh>(Mesh));
 	}

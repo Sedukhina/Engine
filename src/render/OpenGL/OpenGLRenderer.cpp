@@ -90,10 +90,10 @@ void OpenGLRenderer::Tick(float DeltaTime)
 	for (CSceneObject Object : ObjectsToRender)
 	{
 		std::vector<uint64_t> Models = Object.GetObjectsModels();
+		glm::mat4 ModelMatrix = Object.GetModelMatrix();
 		for (uint64_t ModelID : Models)
 		{
 			CModel* Model = GetAssetManager().GetModel(ModelID);
-			glm::mat4 ModelMatrix = Model->GetModelMatrix();
 			glm::mat4 LocalToProjectionSpaceMatrix = CameraPerspectiveMatrix * ModelMatrix;
 			glUniformMatrix4fv(CameraPerspectiveMatrixLocation, 1, GL_FALSE, glm::value_ptr(LocalToProjectionSpaceMatrix));
 

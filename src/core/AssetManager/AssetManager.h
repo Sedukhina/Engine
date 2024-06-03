@@ -15,21 +15,21 @@ public:
 	~CAssetManager() {};
 
 	// First vector with models, second with meshes and third with materials
-	std::vector<std::vector<uint64_t>> ImportModel(std::filesystem::path Path);
-	uint64_t ImportTexture(std::filesystem::path Path);
+	__declspec(dllexport) std::vector<std::vector<uint64_t>> ImportModel(std::filesystem::path Path);
+	__declspec(dllexport) uint64_t ImportTexture(std::filesystem::path Path);
 
 	// Creates empty material
-	uint64_t CreateMaterial(std::string Name);
+	__declspec(dllexport) uint64_t CreateMaterial(std::string Name);
 
-	bool IsExistingMesh(uint64_t ID);
-	bool IsExistingTexture(uint64_t ID);
-	bool IsExistingMaterial(uint64_t ID);
-	bool IsExistingModel(uint64_t ID);
+	__declspec(dllexport) bool IsExistingMesh(uint64_t ID);
+	__declspec(dllexport) bool IsExistingTexture(uint64_t ID);
+	__declspec(dllexport) bool IsExistingMaterial(uint64_t ID);
+	__declspec(dllexport) bool IsExistingModel(uint64_t ID);
 
-	CMesh* GetMesh(uint64_t ID);
-	CTexture* GetTexture(uint64_t ID);
-	CMaterial* GetMaterial(uint64_t ID);
-	CModel* GetModel(uint64_t ID);
+	__declspec(dllexport) CMesh* GetMesh(uint64_t ID);
+	__declspec(dllexport) CTexture* GetTexture(uint64_t ID);
+	__declspec(dllexport) CMaterial* GetMaterial(uint64_t ID);
+	__declspec(dllexport) CModel* GetModel(uint64_t ID);
 
 
 private:

@@ -20,7 +20,10 @@ uint64_t CreateMaterial(std::string Name)
 void SetTextureForMaterial(uint64_t Texture, uint64_t Material, TextureType Type)
 {
 	CMaterial* Mat = GetMaterial(Material);
-	Mat->SetTexture(Texture, Type);
+	if (Mat)
+	{
+		Mat->SetTexture(Texture, Type);
+	}
 }
 
 CMesh* GetMesh(uint64_t ID)

@@ -7,10 +7,10 @@ class SCamera;
 class CLevel;
 class CAssetManager;
 
-extern SPlayer* GetPlayer();
+__declspec(dllexport) extern SPlayer* GetPlayer();
 
-extern CLevel* GetLevel();
+__declspec(dllexport) extern CLevel* GetLevel();
 
-extern CGameState& GetGameState();
+__declspec(dllexport) extern CGameState& GetGameState();
 
-extern CAssetManager& GetAssetManager();
+__declspec(dllexport) extern CAssetManager& GetAssetManager();

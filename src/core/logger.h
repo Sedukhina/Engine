@@ -19,9 +19,9 @@ const char LogLevels[][10] = {"FATAL", "ERROR", "WARNING", "INFO", "DEBUG"};
 class Logger
 {
 public:
-    static bool Initialize();
-    static void Shutdown();
-    static void Log(LogLevel level, const char* message);
+    __declspec(dllexport) static bool Initialize();
+    __declspec(dllexport) static void Shutdown();
+    __declspec(dllexport) static void Log(LogLevel level, const char* message);
 };
 
 #define LOG_FATAL(message) Logger::Log(FATAL, message)

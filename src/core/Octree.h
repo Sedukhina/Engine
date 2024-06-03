@@ -8,7 +8,7 @@ public:
 	~COctree() {};
 
 private:
-	CBox Box;
+	CAABB Box;
 
 	std::vector<COctree> SubTrees;
 	std::vector<CSceneObject> Objects;

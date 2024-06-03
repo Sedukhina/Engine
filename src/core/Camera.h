@@ -8,7 +8,7 @@ public:
 	SCamera(glm::vec3 location, glm::vec3 rotation);
 	~SCamera() {};
 
-	glm::mat4 GetCameraPerspectiveMatrix(float ScreenRatio);
+	__declspec(dllexport) glm::mat4 GetCameraPerspectiveMatrix(float ScreenRatio);
 
 private:
 	bool Orthographic = 0;

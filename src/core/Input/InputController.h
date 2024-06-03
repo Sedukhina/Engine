@@ -9,10 +9,10 @@ public:
 	CInputController() { CurrentInputScheme = InputScheme(); };
 	~CInputController() {};
 
-	void HandleInput(int Key, int Action);
+	__declspec(dllexport) void HandleInput(int Key, int Action);
 	InputScheme* GetCurrentInputScheme() { return &CurrentInputScheme; };
 private:
 	InputScheme CurrentInputScheme;
 };
 
-CInputController& GetInputController();
+__declspec(dllexport) CInputController& GetInputController();

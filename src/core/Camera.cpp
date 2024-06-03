@@ -9,7 +9,7 @@ SCamera::SCamera(glm::vec3 location, glm::vec3 rotation) : CSceneObject(location
 
 void SCamera::UpdatePerspectiveMatrix()
 {
-    glm::vec3 FrontVector = Location + Rotation;
+    glm::vec3 FrontVector = Location + RotationAngle;
     glm::mat4 ViewMatrix = glm::lookAt(Location, FrontVector, GetUpVector());
     glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(FOV), CachedScreenRatio, MinDistance, MaxDistance);
     CameraPerspectiveMatrix = ProjectionMatrix * ViewMatrix;

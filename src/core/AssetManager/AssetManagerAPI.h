@@ -6,14 +6,14 @@
 #include "Model.h"
 #include "Material.h"
 
-extern std::vector<std::vector<uint64_t>> ImportModel(std::filesystem::path Path);
-extern uint64_t ImportTexture(std::filesystem::path Path);
+__declspec(dllexport) extern std::vector<std::vector<uint64_t>> ImportModel(std::filesystem::path Path);
+__declspec(dllexport) extern uint64_t ImportTexture(std::filesystem::path Path);
 
-extern uint64_t CreateMaterial(std::string Name);
+__declspec(dllexport) extern uint64_t CreateMaterial(std::string Name);
 
-extern void SetTextureForMaterial(uint64_t Texture, uint64_t Material, TextureType Type);
+__declspec(dllexport) extern void SetTextureForMaterial(uint64_t Texture, uint64_t Material, TextureType Type);
 
-extern CMesh* GetMesh(uint64_t ID);
-extern CTexture* GetTexture(uint64_t ID);
-extern CMaterial* GetMaterial(uint64_t ID);
-extern CModel* GetModel(uint64_t ID);
+__declspec(dllexport) extern CMesh* GetMesh(uint64_t ID);
+__declspec(dllexport) extern CTexture* GetTexture(uint64_t ID);
+__declspec(dllexport) extern CMaterial* GetMaterial(uint64_t ID);
+__declspec(dllexport) extern CModel* GetModel(uint64_t ID);
