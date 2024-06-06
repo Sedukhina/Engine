@@ -29,11 +29,11 @@ uint64_t Asset::GenerateAssetID()
 	std::filesystem::path PathWithName{};
 	PathWithName.append(Path.string());
 	PathWithName.append(AssetName);
-	uint64_t ID = std::hash<std::filesystem::path>{}(Path);
+	uint64_t ID = std::hash<std::filesystem::path>{}(PathWithName);
 	return ID;
 }
 
-Asset::Asset(std::filesystem::path path, std::string assetName) : Path(path)
+Asset::Asset(std::filesystem::path path, std::string assetName) : Path(path), AssetName(assetName)
 {
 	if (Path.is_absolute())
 	{

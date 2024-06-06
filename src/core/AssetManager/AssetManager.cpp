@@ -40,7 +40,8 @@ std::vector<std::vector<uint64_t>> CAssetManager::ImportModel(std::filesystem::p
 	if (Path.has_extension() && IsExistingPath(&Path))
 	{
 		Assimp::Importer Import;
-		const aiScene* Scene = Import.ReadFile(Path.string().c_str(), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals | aiProcess_GenBoundingBoxes);
+		const aiScene* Scene = Import.ReadFile(Path.string().c_str(), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals | aiProcess_GenBoundingBoxes | aiProcess_JoinIdenticalVertices);
+		//const aiScene* Scene = Import.ReadFile(Path.string().c_str(), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals | aiProcess_GenBoundingBoxes );
 
 		if (!Scene || Scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !Scene->mRootNode)
 		{
@@ -210,6 +211,7 @@ void CAssetManager::ProcessAssimpSceneMeshes(aiNode* Node, const aiScene* Scene,
 		CAABB Box = CAABB(AiMesh->mAABB.mMin.x, AiMesh->mAABB.mMin.y, AiMesh->mAABB.mMin.z, AiMesh->mAABB.mMax.x, AiMesh->mAABB.mMax.y, AiMesh->mAABB.mMax.z);
 
 		CMesh Mesh =  CMesh(Path, AiMesh->mName.C_Str(), Vertices, Indices, Box);
+
 		CreatedAssetsIDs->emplace_back(Mesh.GetAssetID());
 		Meshes.emplace(Mesh.GetAssetID(), std::make_unique<CMesh>(Mesh));
 	}

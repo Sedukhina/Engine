@@ -131,6 +131,7 @@ void OpenGLRenderer::Tick(float DeltaTime)
 			}
 
 			glDrawElements(GL_TRIANGLES, GetAssetManager().GetMesh(Model->GetMesh())->GetIndicesSize(), GL_UNSIGNED_INT, 0);
+			glBindTexture(GL_TEXTURE_2D, 0);
 			glBindVertexArray(0);
 		}
 	}
