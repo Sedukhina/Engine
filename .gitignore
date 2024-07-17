@@ -1,3 +1,6 @@
 build
+Test_models
 .vscode
 src/.gitignore
+src/.vs
+docs

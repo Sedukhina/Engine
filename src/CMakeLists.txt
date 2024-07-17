@@ -19,7 +19,10 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+set(ENGINE_ASSET_DIR ${CMAKE_BINARY_DIR}/EngineAssets)
+
 add_compile_definitions("BIN_ROOT=${CMAKE_BINARY_DIR}")
+add_compile_definitions("ENGINE_ASSETS_DIR=${ENGINE_ASSET_DIR}")
 
 add_executable(main "main.cpp" "Engine.h" "Engine.cpp" )
 target_include_directories(main PRIVATE ${glfw3_INCLUDE_DIRS})

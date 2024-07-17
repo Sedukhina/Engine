@@ -5,6 +5,15 @@
 #define STRING(x) #x
 #define TO_STRING(x) STRING(x)
 
+uint64_t GenerateAssetID(std::filesystem::path Path, std::string AssetName)
+{
+	std::filesystem::path PathWithName{};
+	PathWithName.append(Path.string());
+	PathWithName.append(AssetName);
+	uint64_t ID = std::hash<std::filesystem::path>{}(PathWithName);
+	return ID;
+}
+
 bool Asset::IsLoaded()
 {
 	return Loaded;
@@ -12,6 +21,8 @@ bool Asset::IsLoaded()
 
 void Asset::SetName(std::string Name)
 {
+	AssetName = Name;
+	UpdateAssetID();
 }
 
 std::string Asset::GetName()
@@ -24,13 +35,19 @@ uint64_t Asset::GetAssetID()
 	return AssetID;
 }
 
-uint64_t Asset::GenerateAssetID()
+void Asset::UpdateAssetID()
 {
-	std::filesystem::path PathWithName{};
-	PathWithName.append(Path.string());
-	PathWithName.append(AssetName);
-	uint64_t ID = std::hash<std::filesystem::path>{}(PathWithName);
-	return ID;
+	AssetID = GenerateAssetID(Path, AssetName);
+}
+
+void Asset::Load()
+{
+	Loaded = true;
+}
+
+void Asset::Unload()
+{
+	Loaded = false;
 }
 
 Asset::Asset(std::filesystem::path path, std::string assetName) : Path(path), AssetName(assetName)
@@ -39,5 +56,5 @@ Asset::Asset(std::filesystem::path path, std::string assetName) : Path(path), As
 	{
 		Path = std::filesystem::relative(Path, TO_STRING(BIN_ROOT));
 	}
-	AssetID = GenerateAssetID();
+	UpdateAssetID();
 }

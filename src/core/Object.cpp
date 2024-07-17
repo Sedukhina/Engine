@@ -1,7 +1,33 @@
 #include "Object.h"
 #include <vector>
 
-#include "AssetManager/ModelMatrix.h"
+#include "ModelMatrix.h"
+
+CSceneObject::CSceneObject(CSceneObject* root, glm::vec3 location) 
+	: Location(location)
+{
+	Root = std::make_unique<CSceneObject>(root);
+	UpdateModelMatrix();
+}
+
+CSceneObject::CSceneObject(CSceneObject* root, glm::vec3 location, glm::vec3 rotation)
+	: Location(location), RotationAngle(rotation)
+{
+	Root = std::make_unique<CSceneObject>(root);
+	UpdateModelMatrix();
+}
+
+CSceneObject::CSceneObject(CSceneObject* root, glm::vec3 location, glm::vec3 rotation, glm::vec3 scale) 
+	: Location(location), RotationAngle(rotation), Scale(scale)
+{
+	Root = std::make_unique<CSceneObject>(root);
+	UpdateModelMatrix();
+}
+
+void CSceneObject::AddRotation(glm::vec3 Rotation)
+{
+	SetRotation(RotationAngle + Rotation);
+}
 
 void CSceneObject::SetScale(float scale)
 {
@@ -81,16 +107,6 @@ void CSceneObject::SetLocation(glm::vec3 location)
 {
 	Location = location;
 	UpdateModelMatrix();
-}
-
-std::vector<uint64_t> CSceneObject::GetObjectsModels()
-{
-    return Models;
-}
-
-void CSceneObject::AddModel(uint64_t Model)
-{
-    Models.emplace_back(Model);
 }
 
 void CSceneObject::UpdateModelMatrix()

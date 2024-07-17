@@ -1,3 +1,4 @@
+#include "Texture.h"
 #include "Material.h"
 #include "GetGameGlobals.h"
 #include "AssetManager.h"
@@ -11,17 +12,22 @@ void CMaterial::SetTexture(uint64_t Texture, TextureType Type)
 {
 	if (GetAssetManager().IsExistingTexture(Texture))
 	{
-		if (Type == TextureType::Base)
+		if (Type == TextureType::Diffuse)
 		{
-			SetBaseColor(Texture);
+			SetDiffuseTexture(Texture);
 		}
 	}
 }
 
-void CMaterial::SetBaseColor(uint64_t baseColor)
+void CMaterial::SetDiffuseTexture(uint64_t Texture)
 {
-	if (GetAssetManager().IsExistingTexture(baseColor))
+	if (GetAssetManager().IsExistingTexture(Texture))
 	{
-		BaseColor = baseColor;
+		DiffuseTexture = Texture;
 	}
+}
+
+CTexture* CMaterial::GetDiffuseTexture()
+{
+	return GetAssetManager().GetTexture(DiffuseTexture);
 }

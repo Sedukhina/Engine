@@ -1,7 +1,8 @@
 #pragma once
 
-
-
+// 
+//	Class for axis aligned bounding boxes used for building level octree
+//
 class CAABB
 {
 public:

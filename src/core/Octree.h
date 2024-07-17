@@ -1,10 +1,11 @@
-#include "Box.h"
+#include "AABB.h"
 #include "Object.h"
 
 class COctree
 {
 public:
-	COctree() {};
+	// Creates null Octree
+	COctree();
 	~COctree() {};
 
 private:

@@ -4,9 +4,9 @@
 #include "..\core\Player.h"
 #include "..\core\Level.h"
 #include "..\core\core.h"
-#include "..\core\AssetManager\AssetManager.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp"
+#include "../../core/AssetManager/AssetManagerAPI.h"
 
 bool OpenGLRenderer::StartUp()
 {
@@ -86,55 +86,24 @@ void OpenGLRenderer::Tick(float DeltaTime)
 	
 	CameraPerspectiveMatrix = GetPlayer()->GetCurrentCamera()->GetCameraPerspectiveMatrix(ScreenRatio);
 
-	std::vector<CSceneObject> ObjectsToRender = GetLevel()->GetSceneObjects();
-	for (CSceneObject Object : ObjectsToRender)
+	// TEMP
+	glm::mat4 LocalToProjectionSpaceMatrix = CameraPerspectiveMatrix;
+	glUniformMatrix4fv(CameraPerspectiveMatrixLocation, 1, GL_FALSE, glm::value_ptr(LocalToProjectionSpaceMatrix));
+	GLuint VAO;
+	auto MapIter = Meshes.find(7058324311039917210);
+	if (MapIter != Meshes.end())
 	{
-		std::vector<uint64_t> Models = Object.GetObjectsModels();
-		glm::mat4 ModelMatrix = Object.GetModelMatrix();
-		for (uint64_t ModelID : Models)
-		{
-			CModel* Model = GetAssetManager().GetModel(ModelID);
-			glm::mat4 LocalToProjectionSpaceMatrix = CameraPerspectiveMatrix * ModelMatrix;
-			glUniformMatrix4fv(CameraPerspectiveMatrixLocation, 1, GL_FALSE, glm::value_ptr(LocalToProjectionSpaceMatrix));
-
-			GLuint VAO;
-			auto MapIter = Meshes.find(Model->GetMesh());
-			if (MapIter != Meshes.end())
-			{
-				VAO = MapIter->second;
-			}
-			else
-			{
-				VAO = LoadMeshToVideomemory(Model->GetMesh());
-			}
-			glBindVertexArray(VAO);
-
-			if (Model->HasMaterial())
-			{
-				CMaterial* Material = GetAssetManager().GetMaterial(Model->GetMaterial());
-				uint64_t Base = Material->GetBaseColor();
-				if (Base)
-				{
-					auto TextIter = Textures.find(Base);
-					if (TextIter != Textures.end())
-					{	
-						glActiveTexture(GL_TEXTURE0);
-						glBindTexture(GL_TEXTURE_2D, TextIter->second);
-					}
-					else
-					{
-						GLuint Texture = LoadTextureToVideomemory(Base);
-						glActiveTexture(GL_TEXTURE0);
-						glBindTexture(GL_TEXTURE_2D, Texture);
-					}
-				}
-			}
-
-			glDrawElements(GL_TRIANGLES, GetAssetManager().GetMesh(Model->GetMesh())->GetIndicesSize(), GL_UNSIGNED_INT, 0);
-			glBindTexture(GL_TEXTURE_2D, 0);
-			glBindVertexArray(0);
-		}
+		VAO = MapIter->second;
 	}
+	else
+	{
+		VAO = LoadMeshToVideomemory(7058324311039917210);
+	}
+	glBindVertexArray(VAO);
+	glDrawElements(GL_TRIANGLES, GetAssetManager().GetMesh(7058324311039917210)->GetIndicesSize(), GL_UNSIGNED_INT, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindVertexArray(0);
+
 
 	glfwSwapBuffers(window);		
 	glfwPollEvents();

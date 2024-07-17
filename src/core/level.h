@@ -1,20 +1,23 @@
 #pragma once
 
-#include <vector>
-#include "Object.h"
+#include <string>
+#include "Octree.h"
 
 class CLevel
 {
 public:
 
-	CLevel(){};
+	CLevel(std::string LevelName);
 	~CLevel(){};
 
-	__declspec(dllexport) void AddModelOnScene(uint64_t Model, glm::vec3 location);
+	//__declspec(dllexport) void AddObjectOnScene(uint64_t Mesh, glm::vec3 location);
+	//__declspec(dllexport) void AddObjectOnScene(uint64_t Mesh, glm::vec3 location, glm::vec3 rotation, glm::vec3 scale);
 
-	__declspec(dllexport) std::vector<CSceneObject> GetSceneObjects();
+	__declspec(dllexport) std::string GetName();
 
 private:
-	// TO DO: Make BVH instead
-	std::vector<CSceneObject> ObjectsOnScene;
+	
+	std::string Name;
+	COctree Octree;
+	
 };

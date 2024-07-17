@@ -11,7 +11,6 @@ target_link_libraries(Core PRIVATE assimp::assimp)
 
 find_package(stb REQUIRED)
 target_include_directories(Core PRIVATE ${stb_INCLUDE_DIRS})
-#target_link_libraries(Core PRIVATE stb)
 
 
 target_include_directories(Core PUBLIC "${CURRENT_SOURCE_DIR}")
